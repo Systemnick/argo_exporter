@@ -1,0 +1,7 @@
+# Dependency directories
+vendor/
+.vscode/
+.idea/
+
+# dotenv environment variables file
+.env
