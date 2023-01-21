@@ -25,10 +25,13 @@ func (r Repository) Poll(ip net.IP, metrics *indications.MURMetrics) error {
 	timeStart := time.Now()
 	msg := "MUR TCP indications poll"
 	r.log.Debug().Msg(msg)
+	metrics.SetRegLastPollStartTime(ip)
+
 	defer func() {
 		duration := time.Since(timeStart)
 		r.log.Debug().Dur("duration", duration).Msg(msg + " finished")
 		metrics.SetRegPollDuration(ip, duration)
+		metrics.SetRegLastPollEndTime(ip)
 	}()
 
 	reg := &MUR{

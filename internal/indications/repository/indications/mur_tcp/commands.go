@@ -243,6 +243,7 @@ func (m *MUR) GetAllIndications() map[string]map[string]string {
 		in["AdapterID"] = strconv.Itoa(int(i))
 		in["RegistrarIP"] = m.ip.String()
 		in["PollDuration"] = fmt.Sprintf("%d", time.Since(timeStart))
+		in["LastIndicationsTime"] = fmt.Sprintf("%d", time.Now().UTC().Unix())
 		fmt.Printf("Adapter %s: %+v\n", adapter, in)
 
 		res[adapter] = in

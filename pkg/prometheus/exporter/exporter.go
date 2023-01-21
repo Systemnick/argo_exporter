@@ -33,9 +33,25 @@ func (e *ArgoExporter) Collect(ch chan<- prometheus.Metric) {
 			regAddress)
 	}
 
+	for regAddress, regLastPollStartTime := range e.indications.RegLastPollStartTime {
+		ch <- prometheus.MustNewConstMetric(
+			registrarLastPollStartTimeDesc,
+			prometheus.GaugeValue,
+			float64(regLastPollStartTime.Unix()),
+			regAddress)
+	}
+
+	for regAddress, regLastPollEndTime := range e.indications.RegLastPollEndTime {
+		ch <- prometheus.MustNewConstMetric(
+			registrarLastPollEndTimeDesc,
+			prometheus.GaugeValue,
+			float64(regLastPollEndTime.Unix()),
+			regAddress)
+	}
+
 	for regAddress, duration := range e.indications.RegDuration {
 		ch <- prometheus.MustNewConstMetric(
-			registrarPollDesc,
+			registrarLastPollDurationDesc,
 			prometheus.GaugeValue,
 			float64(duration),
 			regAddress)
@@ -46,8 +62,20 @@ func (e *ArgoExporter) Collect(ch chan<- prometheus.Metric) {
 		if err != nil {
 			continue
 		}
+
 		ch <- prometheus.MustNewConstMetric(
-			meterPollDesc,
+			meterPollDurationDesc,
+			prometheus.GaugeValue,
+			v,
+			meter["RegistrarIP"], meterNumber, meter["AdapterID"])
+
+		v, err = strconv.ParseFloat(meter["LastIndicationsTime"], 64)
+		if err != nil {
+			continue
+		}
+
+		ch <- prometheus.MustNewConstMetric(
+			meterLastIndicationsTimeDesc,
 			prometheus.GaugeValue,
 			v,
 			meter["RegistrarIP"], meterNumber, meter["AdapterID"])
@@ -60,6 +88,7 @@ func (e *ArgoExporter) Collect(ch chan<- prometheus.Metric) {
 				if err != nil {
 					continue
 				}
+
 				ch <- prometheus.MustNewConstMetric(
 					metric.desc,
 					metric.valueType,

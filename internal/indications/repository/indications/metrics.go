@@ -7,10 +7,12 @@ import (
 )
 
 type MURMetrics struct {
-	RegStatus   map[string]int
-	RegDuration map[string]time.Duration
-	Meters      map[string]map[string]string
-	mu          sync.Mutex
+	RegStatus            map[string]int
+	RegDuration          map[string]time.Duration
+	RegLastPollStartTime map[string]time.Time
+	RegLastPollEndTime   map[string]time.Time
+	Meters               map[string]map[string]string
+	mu                   sync.Mutex
 }
 
 func NewMURMetrics() *MURMetrics {
@@ -30,6 +32,18 @@ func (m *MURMetrics) SetRegStatus(ip net.IP, i int) {
 func (m *MURMetrics) SetRegPollDuration(ip net.IP, d time.Duration) {
 	m.mu.Lock()
 	m.RegDuration[ip.String()] = d
+	m.mu.Unlock()
+}
+
+func (m *MURMetrics) SetRegLastPollStartTime(ip net.IP) {
+	m.mu.Lock()
+	m.RegLastPollStartTime[ip.String()] = time.Now().UTC()
+	m.mu.Unlock()
+}
+
+func (m *MURMetrics) SetRegLastPollEndTime(ip net.IP) {
+	m.mu.Lock()
+	m.RegLastPollEndTime[ip.String()] = time.Now().UTC()
 	m.mu.Unlock()
 }
 

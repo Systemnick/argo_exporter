@@ -15,15 +15,33 @@ var (
 		[]string{"registrar_ip"},
 		nil)
 
-	registrarPollDesc = prometheus.NewDesc(
+	registrarLastPollStartTimeDesc = prometheus.NewDesc(
+		prometheus.BuildFQName("registrar", "", "last_poll_start_time"),
+		"Last registrar poll process start time in unix timestamp.",
+		[]string{"registrar_ip"},
+		nil)
+
+	registrarLastPollEndTimeDesc = prometheus.NewDesc(
+		prometheus.BuildFQName("registrar", "", "last_poll_end_time"),
+		"Last registrar poll process end time in unix timestamp.",
+		[]string{"registrar_ip"},
+		nil)
+
+	registrarLastPollDurationDesc = prometheus.NewDesc(
 		prometheus.BuildFQName("registrar", "", "last_poll_duration_nanoseconds"),
 		"Registrar poll duration in nanoseconds.",
 		[]string{"registrar_ip"},
 		nil)
 
-	meterPollDesc = prometheus.NewDesc(
+	meterPollDurationDesc = prometheus.NewDesc(
 		prometheus.BuildFQName("meter", "", "last_poll_duration_nanoseconds"),
 		"Meter poll duration in nanoseconds.",
+		[]string{"registrar_ip", "meter_serial_number", "meter_number_on_registrar"},
+		nil)
+
+	meterLastIndicationsTimeDesc = prometheus.NewDesc(
+		prometheus.BuildFQName("meter", "", "last_indications_time"),
+		"Fetching time of current indications.",
 		[]string{"registrar_ip", "meter_serial_number", "meter_number_on_registrar"},
 		nil)
 
